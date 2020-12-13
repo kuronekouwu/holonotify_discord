@@ -22,4 +22,16 @@ async def on_message(msg) :
 	pass
 
 if __name__ == "__main__" :
+	data = HololiveData(
+		api_yt_key=os.getenv("API_YT_KEY"),
+		token_discord=os.getenv("TOKEN_BOT")
+	)
+
+	# Add Channel Alert
+	data.add_channel(786281659347370005)
+
+	# Start Data
+	data.deamon = True
+	data.start()
+
 	bot.run(os.getenv("TOKEN_BOT"))
