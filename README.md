@@ -22,6 +22,10 @@ Hololive Notify with Discord V. 1.0
 
 That's it!
 
+## Screenshot
+
+![SCREENSHOT BOI!](https://github.com/mrwan200/holonotify_discord/blob/main/screenshot.png)
+
 ## Lastest 
 Thank for source code from 
 [@hololive_notify](https://twitter.com/hololive_notify)
