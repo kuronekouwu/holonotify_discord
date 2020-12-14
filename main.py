@@ -28,7 +28,7 @@ if __name__ == "__main__" :
 	)
 
 	# Add Channel Alert
-	data.add_channel("CHANNEL_ID")
+	data.add_channel(os.getenv("CHANNEL_ID"))
 
 	# Start Data
 	data.deamon = True
