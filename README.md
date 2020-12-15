@@ -14,18 +14,23 @@ Hololive Notify with Discord V. 1.0
 ```
 2. Edit file .env
 ```
-  TOKEN_BOT=<TOKEN BOT DISCORD>
-  API_YT_KEY=<KEY GOOGLE YT>
+  TOKEN_BOT=<TOKEN BOT DISCORD> # Token Discord https://discord.com/developers
+  API_YT_KEY=<KEY GOOGLE YT> # API Youtube Data V3 https://console.developers.google.com/
+  CHANNEL_ID=<CHANNEL_ID> # Channel ID
 ```
 3. run main.py
 
 That's it!
 
+## Screenshot
+
+![SCREENSHOT BOI!](https://github.com/mrwan200/holonotify_discord/blob/main/screenshot.png)
+
 ## Lastest 
 Thank for source code from 
 [@hololive_notify](https://twitter.com/hololive_notify)
 
-And i be applied this code
+And i have requested the code from the owner
 [proof](https://twitter.com/hololive_notify/status/1337747312651558912)
 
 ไปล่ะ :3
