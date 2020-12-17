@@ -1,4 +1,4 @@
-# Hololive Notify Discord
+# HoloNotify Discord 
 Hololive Notify with Discord V. 1.0
 
 ## How to use?
