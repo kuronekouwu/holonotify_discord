@@ -188,7 +188,8 @@ class DownloadImage(Thread) :
 						color=1942002
 					)
 
-					
+					# Rename File
+					move(rf"{self.icon_path.format('tw', 'new', name)}", rf"{self.icon_path.format('tw', 'old', name)}")
 
 				elif key_2 == "tw_banner" :
 					types = "พื้นหลัง"
