@@ -505,7 +505,7 @@ class DownloadImage(Thread) :
 							"bannerid" : self.__get_url_headers(self.contents[name]["yt"]["yt_banner"]),
 							"iconid" : self.__get_url_headers(self.contents[name]["yt"]["yt_icon"])
 						})
-						print("Create Success!")
+						# print("Create Success!")
 		return True
 
 
@@ -900,7 +900,7 @@ class HololiveData(Thread) :
 		return True
 		
 	def __get_members_info(self) :
-		print("Getting Data Members....")
+		# print("Getting Data Members....")
 		res = []
 
 		# Res Data 
@@ -930,8 +930,8 @@ class HololiveData(Thread) :
 
 							i += 1 
 							# print(__member)
-							print(f"Get Data {__member['name']}")
-							print(f"Loaded of [ {i} / {len(load_data_yt)} ]")
+							# print(f"Get Data {__member['name']}")
+							# print(f"Loaded of [ {i} / {len(load_data_yt)} ]")
 
 							res.append({
 								"name" : __member["name"],
@@ -1030,11 +1030,11 @@ class HololiveData(Thread) :
 				if diff :
 					return True
 				else:
-					print(f"Nope {member} {key}")
+					# print(f"Nope {member} {key}")
 					return False
 			else :
-				print(f"Not Found Database {member}")
-				print(f"Createing......")
+				# print(f"Not Found Database {member}")
+				# print(f"Createing......")
 				return False
 		else:
 			return False
