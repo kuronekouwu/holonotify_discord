@@ -1,6 +1,11 @@
 # HoloNotify Discord 
 Hololive Notify with Discord V. 1.0
 
+## Requirement
+- Python 3.5 + 
+- Google Chrome 
+- Bot Discord
+
 ## How to use?
 1. install library this
 ```
