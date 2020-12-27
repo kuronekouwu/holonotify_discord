@@ -1,6 +1,12 @@
 # HoloNotify Discord 
 Hololive Notify with Discord V. 1.0
 
+## Update
+
+Thank you @hololive_notify for retweet my tweet :D
+
+[URL](https://twitter.com/hololive_notify/status/1339500271475458049)
+
 ## Requirement
 - Python 3.5 + 
 - Google Chrome 
