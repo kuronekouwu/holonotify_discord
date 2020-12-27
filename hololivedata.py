@@ -1086,48 +1086,50 @@ class SendMessageDiscord:
 
 	def send_discord_change(self, member, types, platfrom, color, url, 
 		image_url, icon_url, filedrive=None, large_image=False, old=None, new=None) :
-		files=[]
-		i = 1
-		for file in filedrive :
-			files.append(
-				(
-					f"file{i}",(
-						"%s%s.png" % (member.lower().replace(" ",""),i),
-							open(
-								"%s%s" % (os.getcwd(),file.replace("./","/").replace("/",os.sep)),
-								"rb"
-							),
-						"image/png"
-						)
-					)
-				)
 
-			i += 1
-
-		embed = self.__create_embed_2(
-			member=member, 
-			types=types, 
-			platfrom=platfrom, 
-			color=color, 
-			old=old, 
-			new=new, 
-			url=url, 
-			image_url=image_url, 
-			large_image=large_image, 
-			icon_url=icon_url, 
-			files=files
-		)
-
-		payload = {
-			"payload_json" : "%s" % json.dumps(embed)
-		}
 		for x_channels in self.channels :
 			while True:
+				files=[]
+				i = 1
+
+				for file in filedrive :
+					files.append(
+						(
+							f"file{i}",(
+								"%s%s.png" % (member.lower().replace(" ",""),str(datetime.datetime.now().timestamp())),
+									open(
+										"%s%s" % (os.getcwd(),file.replace("./","/").replace("/",os.sep)),
+										"rb"
+									),
+								"image/png"
+								)
+							)
+						)
+
+					i += 1
+					
+				embed = self.__create_embed_2(
+					member=member, 
+					types=types, 
+					platfrom=platfrom, 
+					color=color, 
+					old=old, 
+					new=new, 
+					url=url, 
+					image_url=image_url, 
+					large_image=large_image, 
+					icon_url=icon_url, 
+					files=files
+				)
+
+				payload = {
+					"payload_json" : "%s" % json.dumps(embed)
+				}
+
 				r = requests.post(self.discordapi.format(f"/channels/{x_channels}/messages"),headers=self.__getheaders(),data=payload,files=files)
 				if r.status_code == 200 :
 					break
 				else :
-					print(r.text)
 					i += 1
 					if i >= 60 :
 						print("Failed send to discord...")
