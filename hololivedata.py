@@ -9,6 +9,7 @@ import urllib.request
 import urllib.error
 import json
 import math
+import re
 from pytwitterscraper import TwitterScraper
 from apscheduler.schedulers.blocking import BlockingScheduler
 from selenium import webdriver
@@ -1096,7 +1097,7 @@ class SendMessageDiscord:
 					files.append(
 						(
 							f"file{i}",(
-								"%s%s.png" % (member.lower().replace(" ",""),str(datetime.datetime.now().timestamp())),
+								"%s%s.png" % (re.sub('[^a-zA-Z]+', '', member.lower().replace(" ","")),str(datetime.datetime.now().timestamp())),
 									open(
 										"%s%s" % (os.getcwd(),file.replace("./","/").replace("/",os.sep)),
 										"rb"
