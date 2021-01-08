@@ -9,8 +9,9 @@ Thank you @hololive_notify for retweet my tweet :D
 
 ## Requirement
 - Python 3.5 + 
-- Google Chrome 
+- Google Chrome 84.0.4147.30
 - Bot Discord
+- API YouTube Key
 
 ## How to use?
 1. install library this
@@ -28,6 +29,7 @@ Thank you @hololive_notify for retweet my tweet :D
   TOKEN_BOT=<TOKEN BOT DISCORD> # Token Discord https://discord.com/developers
   API_YT_KEY=<KEY GOOGLE YT> # API Youtube Data V3 https://console.developers.google.com/
   CHANNEL_ID=<CHANNEL_ID> # Channel ID
+  LANGUAGE=TH # If you want English version. You can change TH to EN.
 ```
 3. run main.py
 

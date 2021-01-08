@@ -1,0 +1,33 @@
+{
+	"count_alert" : {
+		"titie" : "{member} reached {count} {type}",
+        "description" : "{member} currently has {count} {type} on {platform}!",
+        "suffix" :  {
+			"twitter" : "follower",
+			"youtube" :  "subscriber"
+		}
+	},
+
+	"change_alert" : {
+		"title" : "{member}'s {change} has been changed on {platform}",
+		"suffix" :  {
+			"old" : " Old",
+			"new" :  " New"
+		}
+	},
+
+	"setting" : {
+		"twitter" : {
+			"icon" : "Icon",
+			"banner" : "Banner",
+			"name" : "Name",
+			"description" : "Description"
+		},
+		"youtube" : {
+			"icon" : "Icon",
+			"banner" : "Banner",
+			"name" : "Name",
+			"about" : "About"
+		}
+	}
+}

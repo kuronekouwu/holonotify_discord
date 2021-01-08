@@ -24,7 +24,8 @@ async def on_message(msg) :
 if __name__ == "__main__" :
 	data = HololiveData(
 		api_yt_key=os.getenv("API_YT_KEY"),
-		token_discord=os.getenv("TOKEN_BOT")
+		token_discord=os.getenv("TOKEN_BOT"),
+		lang=os.getenv("LANGUAGE").lower()
 	)
 
 	# Add Channel Alert

@@ -1,0 +1,33 @@
+{
+	"count_alert" : {
+		"titie" : "{member} มี{type} {count} ",
+		"description" : "ตอนนี้ {member} ยอด{type} บน {platform} ทั้งหมด {count} แล้ว!",
+		"suffix" :  {
+			"twitter" : "ผู้ติดตาม",
+			"youtube" :  "ยอดซับ"
+		}
+	},
+	
+	"change_alert" : {
+		"title" : "มีการเปลี่ยน{change}ของ {member} บน {platform}",
+		"suffix" :  {
+			"old" : "เก่า",
+			"new" :  "ใหม่"
+		}
+	},
+
+	"setting" : {
+		"twitter" : {
+			"icon" : "ไอคอน",
+			"banner" : "พื้นหลัง",
+			"name" : "ชื่อ",
+			"description" : "คำอธิบาย"
+		},
+		"youtube" : {
+			"icon" : "ไอคอน",
+			"banner" : "ปกช่อง",
+			"name" : "ชื่อช่อง",
+			"about" : "เกี่ยวกับ"
+		}
+	}
+}

@@ -20,7 +20,7 @@ from PIL import Image, ImageDraw
 
 
 class DownloadImage(Thread) :
-	def __init__(self, data, data_path, icon_path, banner_path, profile_path, discord_data, timer) :
+	def __init__(self, data, data_path, icon_path, banner_path, profile_path, discord_data, timer, lang) :
 		# Create Thread
 		Thread.__init__(self)
 
@@ -28,7 +28,7 @@ class DownloadImage(Thread) :
 		self.members = data
 
 		# Selenium Setting
-		self.chromdriver_path = "./bin/chromedriver" if os.name == "posix" else "./bin/chromedriver.exe"
+		self.chromdriver_path = os.path.join(os.getcwd() ,"bin", "chromedriver" if os.name == "posix" else "chromedriver.exe")
 
 		# Setting Data Path
 		self.data_path = data_path
@@ -37,8 +37,10 @@ class DownloadImage(Thread) :
 		self.profile_path = profile_path 
 		self.timer = timer
 
-		# Setting Discord
+		# Setting Discord and languge
 		self.discord = discord_data
+		self.lang = lang
+
 
 	def run(self) :
 		start_ = time.time()
@@ -106,7 +108,6 @@ class DownloadImage(Thread) :
 					)
 
 		for name in self.contents.keys():	
-			# print(self.contents)
 			for key in self.contents[name].keys():
 				if "tw" in key :
 					for key_2 in self.contents[name]["tw"].keys() :
@@ -116,30 +117,45 @@ class DownloadImage(Thread) :
 						)
 
 				if "yt" in key :
-					# print("TTT")
 					for key_2 in self.contents[name]["yt"].keys() :
 						self.__check_data_yt(
 							name=name,
 							key_2=key_2
 						)
-
-
-				path_data = "%s%s" % (os.getcwd(),self.profile_path.replace("./","/").replace("/",os.sep))
+				
 				# Twitter
 				if os.path.exists(self.profile_path.format("tw", "new", name)):
-					move(rf"{self.profile_path.format('tw', 'new', name)}", rf"{self.profile_path.format('tw', 'old', name)}")
+					move(
+						self.profile_path.format("tw", "new", name), 
+						self.profile_path.format("tw", "old", name)
+					)
 				if os.path.exists(self.profile_path.format("tw", "new", name+"sub")):
-					move(rf"{self.profile_path.format('tw', 'new', name+'sub')}", rf"{self.profile_path.format('tw', 'old', name+'sub')}")
+					move(
+						self.profile_path.format("tw", "new", name+"sub"), 
+						self.profile_path.format("tw", "old", name+"sub")
+					)
 
 				# YouTube
 				if os.path.exists(self.profile_path.format("yt", "new", name + "_profile")):
-					move(rf"{self.profile_path.format('yt', 'new', name + '_profile')}", rf"{self.profile_path.format('yt', 'old', name + '_profile')}")
-				if os.path.exists(self.profile_path.format("yt", "new", name+'_profilesub')):
-					move(rf"{self.profile_path.format('yt', 'new', name+'_profilesub')}", rf"{self.profile_path.format('yt', 'old', name+'_profilesub')}")
-				if os.path.exists(self.profile_path.format("yt", "new", name + '_about')):
-					move(rf"{self.profile_path.format('yt', 'new', name + '_about')}", rf"{self.profile_path.format('yt', 'old', name + '_about')}")
-				if os.path.exists(self.profile_path.format("yt", "new", name+'_aboutsub')):
-					move(rf"{self.profile_path.format('yt', 'new', name+'_aboutsub')}", rf"{self.profile_path.format('yt', 'old', name+'_aboutsub')}")
+					move(
+						self.profile_path.format("yt", "new", name + "_profile"), 
+						self.profile_path.format("yt", "old", name + "_profile")
+					)
+				if os.path.exists(self.profile_path.format("yt", "new", name+"_profilesub")) :
+					move(
+						self.profile_path.format("yt", "new", name+"_profilesub"), 
+						self.profile_path.format("yt", "old", name+"_profilesub")
+					)
+				if os.path.exists(self.profile_path.format("yt", "new", name + "_about")):
+					move(
+						self.profile_path.format("yt", "new", name + "_about"), 
+						self.profile_path.format("yt", "old", name + "_about")
+					)
+				if os.path.exists(self.profile_path.format("yt", "new", name+"_aboutsub")):
+					move(
+						self.profile_path.format("yt", "new", name+"_aboutsub"), 
+						self.profile_path.format("yt", "old", name+"_aboutsub")
+					)
 
 		self.chrome.quit()
 
@@ -152,13 +168,11 @@ class DownloadImage(Thread) :
 		if measure_time > self.timer * 2 :
 			print("Too hard work on tw_log_notification")
 
-	def __check_data_tw(self, name, key_2, platfrom="Twitter") :
+	def __check_data_tw(self, name, key_2, platform ="Twitter") :
 		if name in self.contents and name in self.old_contents :
 			if self.contents[name]["tw"][key_2] != self.old_contents[name]["tw"][key_2] :
 				if key_2 == "tw_icon" :
-					types = "ไอคอน"
-
-					print(f"{name.replace('_',' ').title()} was change icon in {platfrom}")
+					print(f"{name.replace('_',' ').title()} was change icon in {platform}")
 
 					# Download Images
 					self.__download_image(
@@ -177,8 +191,8 @@ class DownloadImage(Thread) :
 					# Send to Discord
 					self.discord.send_discord_change(
 						member=self.contents[name]["name"].title().replace("_"," "), 
-						types=types, 
-						platfrom=platfrom, 
+						types=self.lang["setting"]["twitter"]["icon"], 
+						platform =platform, 
 						url=self.contents[name]["tw"]["tw_url"],
 						image_url=self.contents[name]["tw"]["tw_icon"], 
 						icon_url="https://i.imgur.com/7tVYAeF_d.webp",
@@ -193,9 +207,7 @@ class DownloadImage(Thread) :
 					move(rf"{self.icon_path.format('tw', 'new', name)}", rf"{self.icon_path.format('tw', 'old', name)}")
 
 				elif key_2 == "tw_banner" :
-					types = "พื้นหลัง"
-
-					print(f"{name.replace('_',' ').title()} was change banner in {platfrom}")
+					print(f"{name.replace('_',' ').title()} was change banner in {platform}")
 
 					# Download Images
 					self.__download_image(
@@ -214,8 +226,8 @@ class DownloadImage(Thread) :
 					# Send to Discord
 					self.discord.send_discord_change(
 						member=self.contents[name]["name"].title().replace("_"," "), 
-						types=types, 
-						platfrom=platfrom, 
+						types=self.lang["setting"]["twitter"]["banner"], 
+						platform =platform , 
 						url=self.contents[name]["tw"]["tw_url"],
 						image_url=self.contents[name]["tw"]["tw_icon"], 
 						icon_url="https://i.imgur.com/7tVYAeF_d.webp",
@@ -232,9 +244,9 @@ class DownloadImage(Thread) :
 				else :
 					if key_2 in ["tw_name","tw_location"] :
 						if key_2 == "tw_name" :
-							types = "ชื่อ"
+							types = self.lang["setting"]["twitter"]["name"]
 						else :
-							types = "คำอธิบาย"
+							types = self.lang["setting"]["twitter"]["description"]
 
 						print(f"{name.replace('_',' ').title()} was change {key_2[key_2.find('_')+1:]}")
 
@@ -257,7 +269,7 @@ class DownloadImage(Thread) :
 						self.discord.send_discord_change(
 							member=self.contents[name]["name"].title().replace("_"," "), 
 							types=types, 
-							platfrom=platfrom,
+							platform =platform ,
 							url=self.contents[name]["tw"]["tw_url"],
 							image_url=self.contents[name]["tw"]["tw_icon"], 
 							icon_url="https://i.imgur.com/7tVYAeF_d.webp",
@@ -276,11 +288,11 @@ class DownloadImage(Thread) :
 			print(f"{name} not found createing...")
 			return False
 
-	def __check_data_yt(self, name, key_2, platfrom="YouTube") :
+	def __check_data_yt(self, name, key_2, platform ="YouTube") :
 		if name in self.contents and name in self.old_contents :
 			if self.contents[name]["yt"][key_2] != self.old_contents[name]["yt"][key_2] :
 				if key_2 == "yt_title" :
-					print(f"{name.replace('_',' ').title()} was change name in {platfrom}")
+					print(f"{name.replace('_',' ').title()} was change name in {platform}")
 
 					# Get New Profile
 					self.__get_profile(
@@ -298,12 +310,11 @@ class DownloadImage(Thread) :
 						types="banner"
 					)
 
-					types = "ชื่อช่อง"
 					# Send to Discord
 					self.discord.send_discord_change(
 						member=self.contents[name]["name"].title().replace("_"," "), 
-						types=types, 
-						platfrom=platfrom,
+						types=self.lang["setting"]["youtube"]["name"], 
+						platform =platform ,
 						url="https://www.youtube.com/channel/%s" % self.contents[name]["yt"]["yt_id"],
 						image_url=self.contents[name]["yt"]["yt_icon"], 
 						icon_url="https://i.imgur.com/FpwHmmL_d.webp",
@@ -317,7 +328,7 @@ class DownloadImage(Thread) :
 					)
 
 				if key_2 == "yt_description" :
-					print(f"{name.replace('_',' ').title()} was change about me in {platfrom}")
+					print(f"{name.replace('_',' ').title()} was change about me in {platform}")
 
 					# Get New Profile
 					self.__get_profile(
@@ -335,12 +346,11 @@ class DownloadImage(Thread) :
 						types="profile"
 					)
 
-					types = "เกี่ยวกับ"
 					# Send to Discord
 					self.discord.send_discord_change(
 						member=self.contents[name]["name"].title().replace("_"," "), 
-						types=types, 
-						platfrom=platfrom,
+						types=self.lang["setting"]["youtube"]["about"], 
+						platform =platform ,
 						url="https://www.youtube.com/channel/%s" % self.contents[name]["yt"]["yt_id"],
 						image_url=self.contents[name]["yt"]["yt_icon"], 
 						icon_url="https://i.imgur.com/FpwHmmL_d.webp",
@@ -352,7 +362,7 @@ class DownloadImage(Thread) :
 					)
 
 				if key_2 == "yt_icon" :
-					print(f"{name.replace('_',' ').title()} was change icon in {platfrom}")
+					print(f"{name.replace('_',' ').title()} was change icon in {platform}")
 
 					# Download Images
 					self.__download_image(
@@ -373,7 +383,7 @@ class DownloadImage(Thread) :
 					self.discord.send_discord_change(
 						member=self.contents[name]["name"].title().replace("_"," "), 
 						types=types, 
-						platfrom=platfrom, 
+						platform =platform , 
 						url="https://www.youtube.com/channel/%s" % self.contents[name]["yt"]["yt_id"],
 						image_url=self.contents[name]["yt"]["yt_icon"], 
 						icon_url="https://i.imgur.com/FpwHmmL_d.webp",
@@ -388,7 +398,7 @@ class DownloadImage(Thread) :
 					move(rf"{self.icon_path.format('yt', 'new', name)}", rf"{self.icon_path.format('yt', 'old', name)}")
 
 				if key_2 == "yt_banner" :
-					print(f"{name.replace('_',' ').title()} was change banner in {platfrom}")
+					print(f"{name.replace('_',' ').title()} was change banner in {platform}")
 
 					# Download Images
 					self.__download_image(
@@ -409,7 +419,7 @@ class DownloadImage(Thread) :
 					self.discord.send_discord_change(
 						member=self.contents[name]["name"].title().replace("_"," "), 
 						types=types, 
-						platfrom=platfrom, 
+						platform=platform , 
 						url="https://www.youtube.com/channel/%s" % self.contents[name]["yt"]["yt_id"],
 						image_url=self.contents[name]["yt"]["yt_icon"], 
 						icon_url="https://i.imgur.com/FpwHmmL_d.webp",
@@ -427,7 +437,7 @@ class DownloadImage(Thread) :
 					if "etag" in self.old_contents[name] :
 						if "bannerid" in self.old_contents[name]["etag"] :
 							if self.__get_url_headers(self.contents[name]["yt"]["yt_banner"]) != self.old_contents[name]["etag"]["bannerid"] :
-								print(f"{name.replace('_',' ').title()} was change banner in {platfrom}")
+								print(f"{name.replace('_',' ').title()} was change banner in {platform}")
 
 								# Download Images
 								self.__download_image(
@@ -448,7 +458,7 @@ class DownloadImage(Thread) :
 								self.discord.send_discord_change(
 									member=self.contents[name]["name"].title().replace("_"," "), 
 									types=types, 
-									platfrom=platfrom, 
+									platform=platform , 
 									url="https://www.youtube.com/channel/%s" % self.contents[name]["yt"]["yt_id"],
 									image_url=self.contents[name]["yt"]["yt_icon"], 
 									icon_url="https://i.imgur.com/FpwHmmL_d.webp",
@@ -464,7 +474,7 @@ class DownloadImage(Thread) :
 
 						if "iconid" in self.old_contents[name]["etag"] : 
 							if self.__get_url_headers(self.contents[name]["yt"]["yt_icon"]) != self.old_contents[name]["etag"]["iconid"] :
-								print(f"{name.replace('_',' ').title()} was change icon in {platfrom}")
+								print(f"{name.replace('_',' ').title()} was change icon in {platform}")
 
 								# Download Images
 								self.__download_image(
@@ -485,7 +495,7 @@ class DownloadImage(Thread) :
 								self.discord.send_discord_change(
 									member=self.contents[name]["name"].title().replace("_"," "), 
 									types=types, 
-									platfrom=platfrom, 
+									platform`=platform , 
 									url="https://www.youtube.com/channel/%s" % self.contents[name]["yt"]["yt_id"],
 									image_url=self.contents[name]["yt"]["yt_icon"], 
 									icon_url="https://i.imgur.com/FpwHmmL_d.webp",
@@ -550,6 +560,7 @@ class DownloadImage(Thread) :
 
 			# Find Element 
 			if types == "tw" :
+				# self.chrome.get_screenshot_as_file(path)
 				element = self.chrome.find_element_by_xpath("/html/body/div/div/div/div[2]/main/div/div/div/div[1]/div/div[2]/div/div/div[1]")
 
 				# Screenshot
@@ -614,13 +625,9 @@ class DownloadImage(Thread) :
 		right = int(element.location["x"] + element.size["width"])
 		bottom = int(element.location["y"] + element.size["height"])
 
-		# print(left)
-		# print(top)
-		# print(right)
-		# print(bottom)
 		# Setting And Save Iamge
 		im = Image.open(path)
-		# im.tile = [e for e in im.tile if e[1][2] < 2181 and e[1][3]<1294]
+
 		if left >= 1 and right >= 1 and bottom >= 1 and top >= 1 :
 			im = im.crop((left, top, right, bottom))
 
@@ -642,9 +649,9 @@ class DownloadImage(Thread) :
 			void_pix = 30
 			line_width = 20
 
-			# Open Image FIle
-			im1 = Image.open("%s%s" % (os.getcwd(),im1_path.replace("./","/").replace("/",os.sep)))
-			im2 = Image.open("%s%s" % (os.getcwd(),im2_path.replace("./","/").replace("/",os.sep)))
+			# Open Image File
+			im1 = Image.open(im1_path)
+			im2 = Image.open(im2_path)
 
 			if types == "icon" or types == "profile" :
 				# print(types)
@@ -723,7 +730,7 @@ class DownloadImage(Thread) :
 			draw.polygon(arrow_coor, fill=line_c)
 
 			# Save Image
-			dst.save("%s%s" % (os.getcwd(),gen_img_name.replace("./","/").replace("/",os.sep)))
+			dst.save(gen_img_name)
 
 			return True
 		except Exception as e :
@@ -731,10 +738,10 @@ class DownloadImage(Thread) :
 			return False
 
 class HololiveData(Thread) :
-	def __init__(self, api_yt_key, token_discord, react_count=5000) :
+	def __init__(self, api_yt_key, token_discord, react_count=5000, lang="th") :
 		# Create Thread
 		Thread.__init__(self)
-
+	
 		# Get Data Every 
 		self.minutes = 3
 
@@ -743,12 +750,18 @@ class HololiveData(Thread) :
 		self.tw = TwitterScraper()
 		
 		# Path Setting
-		self.path_db = "./database/{}.json"
-		self.path_num = "./database/bin/num_log.pickle"
-		self.path_datalog = "./database/bin/data_log.pickle"
-		self.path_icon_img = "./database/images/icon/{}/{}_icon_{}.png"
-		self.path_banner_img = "./database/images/bg/{}/{}_banner_{}.png"
-		self.path_profile_img = "./database/images/profiles/{}/{}_profile_{}.png"
+		self.dbname = "database"
+
+		self.path_db = os.path.join(os.getcwd(), self.dbname)
+		
+		# Bin data [ num_follower, change_data ]
+		self.path_num = os.path.join(os.getcwd(), self.dbname, "bin", "num_log.pickle")
+		self.path_datalog = os.path.join(os.getcwd(), self.dbname, "bin", "data_log.pickle")
+
+		# Database Images
+		self.path_icon_img = os.path.join(os.getcwd(), self.dbname, "images", "icon", "{}", "{}_icon_{}.png")
+		self.path_banner_img = os.path.join(os.getcwd(), self.dbname, "images", "bg", "{}", "{}_banner_{}.png")
+		self.path_profile_img = os.path.join(os.getcwd(), self.dbname, "images", "profiles", "{}", "{}_profile_{}.png")
 
 		# Endpoint
 		self.yturl = "https://youtube.googleapis.com/{}?{}&key=" + self.api_yt_key
@@ -759,11 +772,17 @@ class HololiveData(Thread) :
 		# Sched 
 		self.sched = BlockingScheduler()
 
-		# Data Discord
-		self.discord = SendMessageDiscord(token=token_discord)
-
 		# Get Members
 		self.__getmembers()
+
+		# Setting Language
+		self.lang = self.__load_lang(lang)
+
+		# Data Discord
+		self.discord = SendMessageDiscord(
+			token=token_discord,
+			lang=self.lang
+		)
 
 	def run(self) :
 		start_ = time.time()
@@ -811,7 +830,8 @@ class HololiveData(Thread) :
 			banner_path=self.path_banner_img, 
 			profile_path=self.path_profile_img,
 			discord_data=self.discord,
-			timer=self.minutes
+			timer=self.minutes,
+			lang=self.lang
 		)
 
 		dw_images.deamon = True
@@ -851,45 +871,37 @@ class HololiveData(Thread) :
 			with open(self.path_num, "rb") as data_num :
 				old_contents = pickle.load(data_num)
 
-			# 
-			# print(old_contents)
-			# print(data_follower)
 			if self.__judge(member=__member["name"], contents=data_follower, 
 				old_contents=old_contents, key="tw_follower", th_val=self.react_count) :
-				text = "Follower"
-				platfrom = "Twitter"
-				follower = "{:2,}".format(int(data_follower[__member["name"]]["tw_follower"]))
 
 				self.discord.send_discord_follower(
 					member=__member["name"].title().replace("_"," "), 
-					title=text, 
-					platfrom=platfrom, 
-					follower=follower, 
+					title=self.lang["count_alert"]["suffix"]["twitter"], 
+					platform ="Twitter" , 
+					follower="{:2,}".format(int(data_follower[__member["name"]]["tw_follower"])), 
 					url=data_mem["tw_info"]["tw_url"],
 					image_url=data_mem["tw_info"]["tw_icon"],
 					icon_url="https://i.imgur.com/7tVYAeF_d.webp",
 					color=1942002
 				)
 
-				print(f"{__member['name']} {text} on {platfrom}: {follower}")
+				print(f"{__member['name']} {self.lang['count_alert']['suffix']['twitter']} on Twitter : " + "{:2,}".format(int(data_follower[__member["name"]]["tw_follower"])))
 
 			if self.__judge(member=__member["name"], contents=data_follower, 
 				old_contents=old_contents,key="yt_sub", th_val=self.react_count) :
-				text = "Subscribe"
-				platfrom = "Youtube"
-				follower = "{:2,}".format(int(data_follower[__member["name"]]["yt_sub"]))
 
 				self.discord.send_discord_follower(
 					member=__member["name"].title().replace("_"," "), 
-					title=text, 
-					platfrom=platfrom, 
-					follower=follower, 
+					title=self.lang["count_alert"]["suffix"]["youtube"], 
+					platform ="Youtube", 
+					follower="{:2,}".format(int(data_follower[__member["name"]]["yt_sub"])), 
 					url=f"https://www.youtube.com/channel/{data_mem['yt_info']['yt_id']}",
 					image_url=data_mem["yt_info"]["yt_icon"],
 					icon_url="https://i.imgur.com/FpwHmmL_d.webp",
 					color=16711680
 				)
-				print(f"{__member['name']} {text} on {platfrom}: {follower}")
+
+				print(f"{__member['name']} {self.lang['count_alert']['suffix']['youtube']} on YouTube : " + "{:2,}".format(int(data_follower[__member["name"]]["yt_sub"])))
 			
 
 		print("Saveing Database....")
@@ -928,11 +940,7 @@ class HololiveData(Thread) :
 					for mem in self.members :
 						if str(tw_id) == str(mem["twitter"]) :
 							__member = mem
-
 							i += 1 
-							# print(__member)
-							# print(f"Get Data {__member['name']}")
-							# print(f"Loaded of [ {i} / {len(load_data_yt)} ]")
 
 							res.append({
 								"name" : __member["name"],
@@ -995,7 +1003,7 @@ class HololiveData(Thread) :
 		return res
 
 	def __getmembers(self) :
-		with open(self.path_db.format("hololivedb"),"r") as db :
+		with open(os.path.join(self.path_db, ("hololivedb.json")),"r") as db :
 			self.members = json.loads(db.read())
 
 	def __getchannelid(self) :
@@ -1016,26 +1024,20 @@ class HololiveData(Thread) :
 
 		return res
 
+	def __load_lang(self, lang="th") :
+		with open(os.path.join(os.getcwd(), "lang", lang + ".json"),"r") as f :
+			return json.loads(f.read())
+
 	# Check if people follower over 10000
 	def __judge(self, member, key, contents, old_contents, th_val):
 		if key in contents[member].keys():
-			# print(old_contents)
 			if member in old_contents :
 				diff = int(contents[member][key]) // th_val > int(old_contents[member][key]) // th_val
-				# print("========================================")
-				# print(f"Data {key} [{member}] ")
-				# print(f"Data Old Follower: {int(old_contents[member][key])}")
-				# print(f"Data New Follower: {int(contents[member][key])}")
-				# print(f"Key DIfferent: {diff}")
-				# print("========================================")
 				if diff :
 					return True
 				else:
-					# print(f"Nope {member} {key}")
 					return False
 			else :
-				# print(f"Not Found Database {member}")
-				# print(f"Createing......")
 				return False
 		else:
 			return False
@@ -1055,7 +1057,7 @@ class HololiveData(Thread) :
 		return [prams,j]
 
 class SendMessageDiscord: 
-	def __init__(self, token) :
+	def __init__(self, token, lang) :
 		# Endpoint
 		self.discordapi = "https://discord.com/api/v8{}"
 
@@ -1065,12 +1067,13 @@ class SendMessageDiscord:
 
 		# Setting Discord
 		self.channels = []
+		self.lang = lang 
 
 	def add_channel(self, channel_id) :
 		self.channels.append(channel_id)
 
-	def send_discord_follower(self, member, title, platfrom, follower, image_url, url, icon_url, color) :
-		embed = self.__create_embed(member, title, platfrom, follower, image_url, url, icon_url, color)
+	def send_discord_follower(self, member, title, platform , follower, image_url, url, icon_url, color) :
+		embed = self.__create_embed(member, title, platform , follower, image_url, url, icon_url, color)
 
 		for x_channels in self.channels :
 			i = 0
@@ -1085,7 +1088,7 @@ class SendMessageDiscord:
 						print("Failed send to discord...")
 						break
 
-	def send_discord_change(self, member, types, platfrom, color, url, 
+	def send_discord_change(self, member, types, platform , color, url, 
 		image_url, icon_url, filedrive=None, large_image=False, old=None, new=None) :
 
 		for x_channels in self.channels :
@@ -1098,10 +1101,7 @@ class SendMessageDiscord:
 						(
 							f"file{i}",(
 								"%s%s.png" % (re.sub('[^a-zA-Z]+', '', member.lower().replace(" ","")),str(datetime.datetime.now().timestamp())),
-									open(
-										"%s%s" % (os.getcwd(),file.replace("./","/").replace("/",os.sep)),
-										"rb"
-									),
+									open(file,"rb"),
 								"image/png"
 								)
 							)
@@ -1112,7 +1112,7 @@ class SendMessageDiscord:
 				embed = self.__create_embed_2(
 					member=member, 
 					types=types, 
-					platfrom=platfrom, 
+					platform =platform , 
 					color=color, 
 					old=old, 
 					new=new, 
@@ -1142,23 +1142,26 @@ class SendMessageDiscord:
 			if r.status_code == 200 :
 				return r.json()
 
-	def __create_embed(self, member, title, platfrom, follower, image_url, url, icon_url, color) :
+	def __create_embed(self, member, title, platform , follower, image_url, url, icon_url, color) :
 		embed = {
 			"embed": {
-				"title": f"{member} react {title.lower()} in {platfrom} {follower}",
-				"description": f"ตอนนี้ {member} ยอด {title} บน {platfrom} มีทั้งหมด {follower} แล้ว!",
-				"url": f"{url}",
+				"title": str(self.lang["count_alert"]["titie"].format(member=member, type=title.lower(), platform=platform, count=follower)),
+				"description": str(self.lang["count_alert"]["description"].format(member=member, type=title.lower(), platform=platform , count=follower)),
+				"url": str(url),
 				"color": color,
-				"timestamp": "%s" % datetime.datetime.now().utcnow(),
+				"timestamp": str(datetime.datetime.now().utcnow()),
 				"footer": {
-					"icon_url": f"https://cdn.discordapp.com/avatars/{self.data_profile['id']}/{self.data_profile['avatar']}.png?size=1024",
+					"icon_url": "https://cdn.discordapp.com/avatars/{}/{}.png?size=1024".format(
+						self.data_profile["id"],
+						self.data_profile["avatar"]
+					),
 					"text": self.data_profile["username"]
 				},
 				"thumbnail": {
 					"url": image_url
 				},
 				"author": {
-					"name": platfrom,
+					"name": platform ,
 					"icon_url": icon_url
 				},
 			}
@@ -1166,22 +1169,25 @@ class SendMessageDiscord:
 
 		return embed
 
-	def __create_embed_2(self, member, types, platfrom, color, url, image_url, large_image, icon_url, files=None, old=None, new=None) :
+	def __create_embed_2(self, member, types, platform , color, url, image_url, large_image, icon_url, files=None, old=None, new=None) :
 		embed = {
 			"embed": {
-				"title": f"มีการเปลี่ยน{types} ของ {member} ใน {platfrom}",
-				"url": f"{url}",
+				"title": str(self.lang["change_alert"]["title"].format(change=types.lower(), member=member, platform=platform)),
+				"url": str(url),
 				"color": color,
-				"timestamp": "%s" % datetime.datetime.now().utcnow(),
+				"timestamp": str(datetime.datetime.now().utcnow()),
 				"footer": {
-					"icon_url": f"https://cdn.discordapp.com/avatars/{self.data_profile['id']}/{self.data_profile['avatar']}.png?size=1024",
+					"icon_url": "https://cdn.discordapp.com/avatars/{}/{}.png?size=1024".format(
+						self.data_profile["id"],
+						self.data_profile["avatar"]
+					),
 					"text": self.data_profile["username"]
 				},
 				"thumbnail": {
 					"url": image_url
 				},
 				"author": {
-					"name": platfrom,
+					"name": platform ,
 					"icon_url": icon_url
 				},
 			}
@@ -1190,12 +1196,12 @@ class SendMessageDiscord:
 		if not old is None and not new is None :
 			embed["embed"].update({
 				"fields" : [{
-					"name" : f"{types}เก่า",
+					"name" : types + self.lang["change_alert"]["suffix"]["old"],
 					"value" : old,
 					"inline" : True
 				},
 				{
-					"name" : f"{types}ใหม่",
+					"name" : types + self.lang["change_alert"]["suffix"]["new"],
 					"value" : new,
 					"inline" : True
 				}]
