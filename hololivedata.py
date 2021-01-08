@@ -495,7 +495,7 @@ class DownloadImage(Thread) :
 								self.discord.send_discord_change(
 									member=self.contents[name]["name"].title().replace("_"," "), 
 									types=types, 
-									platform`=platform , 
+									platform=platform , 
 									url="https://www.youtube.com/channel/%s" % self.contents[name]["yt"]["yt_id"],
 									image_url=self.contents[name]["yt"]["yt_icon"], 
 									icon_url="https://i.imgur.com/FpwHmmL_d.webp",
