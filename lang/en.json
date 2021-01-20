@@ -1,8 +1,8 @@
 {
 	"count_alert" : {
 		"titie" : "{member} reached {count} {type}",
-        "description" : "{member} currently has {count} {type} on {platform}!",
-        "suffix" :  {
+        	"description" : "{member} currently has {count} {type} on {platform}!",
+        	"suffix" :  {
 			"twitter" : "follower",
 			"youtube" :  "subscriber"
 		}
