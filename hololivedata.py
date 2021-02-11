@@ -95,8 +95,13 @@ class DownloadImage(Thread) :
 					)
 
 				if not os.path.exists(self.banner_path.format("yt", "old", name)) :
+					if self.contents[name]["yt"]["yt_banner"] is None :
+						url = "https://s.ytimg.com/yts/img/channels/c4/default_banner-vflYp0HrA.jpg"
+					else :
+						url = self.contents[name]["yt"]["yt_banner"] + "=w1707-fcrop64=1,00005a57ffffa5a8-k-c0xffffffff-no-nd-rj"
+
 					self.__download_image(
-						url=self.contents[name]["yt"]["yt_banner"] + "=w1707-fcrop64=1,00005a57ffffa5a8-k-c0xffffffff-no-nd-rj", 
+						url=url, 
 						path=self.banner_path.format("yt", "old", name),
 					)
 
@@ -400,9 +405,14 @@ class DownloadImage(Thread) :
 				if key_2 == "yt_banner" :
 					print(f"{name.replace('_',' ').title()} was change banner in {platform}")
 
+					if self.contents[name]["yt"]["yt_banner"] is None :
+						url = "https://s.ytimg.com/yts/img/channels/c4/default_banner-vflYp0HrA.jpg"
+					else :
+						url = self.contents[name]["yt"]["yt_banner"] + "=w1707-fcrop64=1,00005a57ffffa5a8-k-c0xffffffff-no-nd-rj"
+
 					# Download Images
 					self.__download_image(
-						url=self.contents[name]["yt"][key_2] + "=w1707-fcrop64=1,00005a57ffffa5a8-k-c0xffffffff-no-nd-rj", 
+						url=url, 
 						path=self.banner_path.format("yt", "new", name)
 					)
 
@@ -439,9 +449,14 @@ class DownloadImage(Thread) :
 							if self.__get_url_headers(self.contents[name]["yt"]["yt_banner"]) != self.old_contents[name]["etag"]["bannerid"] :
 								print(f"{name.replace('_',' ').title()} was change banner in {platform}")
 
+								if self.contents[name]["yt"]["yt_banner"] is None :
+									url = "https://s.ytimg.com/yts/img/channels/c4/default_banner-vflYp0HrA.jpg"
+								else :
+									url = self.contents[name]["yt"]["yt_banner"] + "=w1707-fcrop64=1,00005a57ffffa5a8-k-c0xffffffff-no-nd-rj"
+
 								# Download Images
 								self.__download_image(
-									url=self.contents[name]["yt"][key_2], 
+									url=url, 
 									path=self.banner_path.format("yt", "new", name)
 								)
 
@@ -476,9 +491,15 @@ class DownloadImage(Thread) :
 							if self.__get_url_headers(self.contents[name]["yt"]["yt_icon"]) != self.old_contents[name]["etag"]["iconid"] :
 								print(f"{name.replace('_',' ').title()} was change icon in {platform}")
 
+								
+								if self.contents[name]["yt"]["yt_banner"] is None :
+									url = "https://s.ytimg.com/yts/img/channels/c4/default_banner-vflYp0HrA.jpg"
+								else :
+									url = self.contents[name]["yt"]["yt_banner"] + "=w1707-fcrop64=1,00005a57ffffa5a8-k-c0xffffffff-no-nd-rj"
+
 								# Download Images
 								self.__download_image(
-									url=self.contents[name]["yt"][key_2], 
+									url=url, 
 									path=self.icon_path.format("yt", "new", name)
 								)
 
@@ -966,13 +987,19 @@ class HololiveData(Thread) :
 				)
 			)
 
+			
 			for __x in req.json()["items"] :
+				if not "image" in __x["brandingSettings"] :
+					url = None
+				else :
+					url = __x["brandingSettings"]["image"]["bannerExternalUrl"]
+					
 				contents = {
 					"yt_id" : __x["id"],
 					"yt_title" : __x["snippet"]["title"],
 					"yt_description" : __x["snippet"]["description"],
 					"yt_icon" : __x["snippet"]["thumbnails"]["high"]["url"],
-					"yt_banner" : __x["brandingSettings"]["image"]["bannerExternalUrl"],
+					"yt_banner" : url,
 					"yt_subscribe_counts" : __x["statistics"]["subscriberCount"],
 					"yt_view_counts" : __x["statistics"]["viewCount"],
 				}
